@@ -14,7 +14,7 @@ interface BlurFadeProps {
   delay?: number;
   yOffset?: number;
   inView?: boolean;
-  inViewMargin?: number | string | { top?: number | string; right?: number | string; bottom?: number | string; left?: number | string };
+  inViewMargin?: string;
   blur?: string;
 }
 const BlurFade = ({
@@ -29,7 +29,14 @@ const BlurFade = ({
   blur = "6px",
 }: BlurFadeProps) => {
   const ref = useRef(null);
-  const inViewResult = useInView(ref, { once: true, margin: inViewMargin });
+  
+  // Create the options object and directly pass it to useInView
+  const inViewResult = useInView(ref, { 
+    once: true, 
+    /* Using rootMargin which is more standard and should work with the types */
+    rootMargin: inViewMargin 
+  });
+  
   const isInView = !inView || inViewResult;
   const defaultVariants: Variants = {
     hidden: { y: yOffset, opacity: 0, filter: `blur(${blur})` },
